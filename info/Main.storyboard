@@ -324,7 +324,7 @@ A única área que eu acho, que vai exigir muita atenção nossa, e aí eu já a
                                 <constraint firstItem="fRw-yn-w08" firstAttribute="centerX" secondItem="3yf-Eb-358" secondAttribute="centerX" id="kiE-eE-eqb"/>
                             </constraints>
                             <connections>
-                                <outlet property="segmentedControl" destination="fRw-yn-w08" id="SLk-EG-cYo"/>
+                                <outlet property="segmentedControl" destination="fRw-yn-w08" id="61f-UQ-Gbg"/>
                             </connections>
                         </collectionReusableView>
                         <connections>

@@ -15,7 +15,7 @@ class Connection: NSObject, WCSessionDelegate {
     static let sortAverage = "top_rated"
     
     //MARK: = urls base
-    static let api_key          = "64b8f1de826f895afdedff6997169a91" //Please use your key
+    static let api_key          = "xxx" //Please use your key
     static let server           = "http://api.themoviedb.org/3"
     static let urlConfig        = "\(server)/configuration?api_key=%@"           //config
     static let urlList          = "\(server)/movie/%@?api_key=\(api_key)&page=%d"  //movie list
