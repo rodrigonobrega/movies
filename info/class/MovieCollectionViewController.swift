@@ -200,7 +200,7 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
             navigationController?.setNavigationBarHidden(false, animated: true)
             tapWhenScrolling = false
         } else if navigationController?.navigationBarHidden == true {
-            Util.playSound("slide_bar")
+            Util.playSound("slide")
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
         self.startAlphaToNavigation()
