@@ -14,14 +14,11 @@ class FilterCollectionReusableView: UICollectionReusableView {
     
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    //var listPopularity:[mov]
-    
     @IBAction func updateMovieList(sender: AnyObject) {
         Util.playSound("change")
         
         let segment = sender as! UISegmentedControl
         if ((delegate?.respondsToSelector(#selector(updateMovieList(_:)))) != nil) {
-      //      (delegate as! MovieCollectionViewController).listMovie
             (delegate as! MovieCollectionViewController).updateMovieList(segment.selectedSegmentIndex)
         }
     }

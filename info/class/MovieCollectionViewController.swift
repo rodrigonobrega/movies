@@ -150,6 +150,7 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
                                                 forState: UIControlState.Normal)
         cellH.segmentedControl.removeBorders()
         cellH.delegate = self
+        cellH.segmentedControl.selectedSegmentIndex = sortBy
         return cellH
     }
     
