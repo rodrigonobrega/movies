@@ -21,6 +21,7 @@ class DetailViewController: UITableViewController {
     
     
     override func viewWillAppear(animated: Bool) {
+        
         if let indexPath = self.tableView.indexPathForSelectedRow {
             self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }

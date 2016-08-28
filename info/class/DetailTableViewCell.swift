@@ -50,7 +50,7 @@ class DetailTableViewCell: UITableViewCell, VoteControl {
         UIView.animateWithDuration(0.4, animations: {
             self.imagePoster.frame = frame
             }) { (Bool) in
-                Util.playSound("slide")
+                Util.playSound("drop")
                 self.performSelector(#selector(self.averageVoteStart), withObject: nil, afterDelay: 0.2)
         }
     }

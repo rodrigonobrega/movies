@@ -12,7 +12,7 @@ class TitleTableViewCell: UITableViewCell {
     @IBOutlet weak var lblTitle: UILabel!
     
     let originalColor   = UIColor(red: 0, green: 157/255, blue: 139/255, alpha: 1)
-    let darkColor       = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
+    
     
     var movie: Movie! {
         didSet{
@@ -31,7 +31,7 @@ class TitleTableViewCell: UITableViewCell {
         
         self.selectionStyle = .None
         self.userInteractionEnabled = false
-        self.contentView.backgroundColor = self.darkColor
+        self.contentView.backgroundColor = Util.darkColor
         self.lblTitle.textColor = originalColor
         
         if self.lblTitle.text == movie?.title {

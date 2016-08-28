@@ -11,8 +11,9 @@ import AudioToolbox
 
 class Util: NSObject {
     
-    static let standarCellSize  = CGSizeMake(160, 240)// use for set default size in movie controller
-
+    static let standarCellSize = CGSizeMake(160, 240)// use for set default size in movie controller
+    static let darkColor       = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
+    
     // verify internet access
     class func isConnectToNetwork() -> Bool {
         return Reachability.isConnectedToNetwork()

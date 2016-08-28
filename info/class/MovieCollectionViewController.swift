@@ -9,16 +9,25 @@ import UIKit
 
 private let reuseIdentifier = "Cell"
 
-class MovieCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class MovieCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
 
     
-    var detailViewController: DetailViewController? = nil
-    var listMovie = [Movie]()
-    var page:Int = 1
-    var sortBy = 0
-    var finishedLoadMovies:Bool = false
-    var error = false
+    @IBOutlet var collectionViewMovies: UICollectionView!
     
+    var detailViewController: DetailViewController? = nil
+    var finishedLoadMovies = false
+    var error              = false
+    var listMovie   = [Movie]()
+    var sortBy = 0
+    var page   = 1
+    
+    var tapWhenScrolling = false
+    
+    private var lastContentOffset: CGFloat = 0
+    
+    override func viewWillDisappear(animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
     
     override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
         collectionView?.reloadData()
@@ -32,6 +41,15 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(MovieCollectionViewController.handleTap(_:)))
+
+        singleTap.cancelsTouchesInView = false
+        singleTap.numberOfTapsRequired = 1
+        singleTap.enabled = true
+        singleTap.delegate = self
+        self.view.addGestureRecognizer(singleTap)
+        
         
         let flow = collectionView!.collectionViewLayout as! UICollectionViewFlowLayout
         if #available(iOS 9.0, *) {
@@ -48,6 +66,12 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     }
     
     
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    func handleTap(sender:AnyObject?) {
+        tapWhenScrolling = true
+    }
     func loadBegin() {
         
         Connection.configApplication( {(message) -> Void in
@@ -73,8 +97,18 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
         Connection.loadMovies(page, sort_by: sortBy, onSuccess: { (retorno) -> Void in
             self.finishedLoadMovies = true
             if retorno.listMovie.count > 0 {
+                
                 self.finishedLoadMovies = false
                 self.listMovie.appendContentsOf(retorno.listMovie)
+                
+                
+                var shotPercentageFloat: Float
+                shotPercentageFloat = Float(self.listMovie.count)/Float(retorno.total_results!)
+                
+               let twoDecimalPlaces = String(format: "%.2f", shotPercentageFloat*100)
+                
+                self.navigationItem.prompt = "\(twoDecimalPlaces)% displayed"
+                
                 self.listMovie.append(Movie(json: ""))
             }
             
@@ -111,6 +145,10 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
         
         let cellH = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: "CellHeader", forIndexPath: indexPath) as! FilterCollectionReusableView
 
+        let font = UIFont.systemFontOfSize(20)
+        cellH.segmentedControl.setTitleTextAttributes([NSFontAttributeName: font],
+                                                forState: UIControlState.Normal)
+        cellH.segmentedControl.removeBorders()
         cellH.delegate = self
         return cellH
     }
@@ -155,5 +193,50 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
         super.didReceiveMemoryWarning()
 
     }
+    
+    override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        
+        if tapWhenScrolling {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+            tapWhenScrolling = false
+        } else if navigationController?.navigationBarHidden == true {
+            Util.playSound("slide")
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+        self.startAlphaToNavigation()
+    }
+    
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        
+        self.navigationController!.navigationBar.setBackgroundImage(UIImage.fromColor(Util.darkColor.colorWithAlphaComponent(0.4)), forBarMetrics: UIBarMetrics.Default)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+
+    }
+    
+    func startAlphaToNavigation() {
+        var alpha = 0.5
+        var tempo = 0.1
+        for _ in 0...24 {
+            performSelector(#selector(incrementAlphaToNavigation), withObject: NSNumber(double: alpha), afterDelay: tempo )
+            alpha = alpha + 0.01
+            tempo = tempo + 0.02
+        }
+        
+    }
+    
+    func incrementAlphaToNavigation(alpha:NSNumber) {
+        let cg = Float(alpha)
+        self.navigationController!.navigationBar.setBackgroundImage(UIImage.fromColor(Util.darkColor.colorWithAlphaComponent(CGFloat(cg))), forBarMetrics: UIBarMetrics.Default)
+    }
+    
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (self.lastContentOffset > scrollView.contentOffset.y) {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+        
+        self.lastContentOffset = scrollView.contentOffset.y
+    }
+    
     
 }
