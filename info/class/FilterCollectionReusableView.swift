@@ -15,12 +15,12 @@ class FilterCollectionReusableView: UICollectionReusableView {
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     @IBAction func updateMovieList(sender: AnyObject) {
-        Util.playSound("change")
+        Util.playSound(soundName: "change")
         
         let segment = sender as! UISegmentedControl
-        if ((delegate?.respondsToSelector(#selector(updateMovieList(_:)))) != nil) {
-            (delegate as! MovieCollectionViewController).updateMovieList(segment.selectedSegmentIndex)
-        }
+        //if ((delegate?.responds(to: )(#selector(updateMovieList(sender:)))) != nil) {
+            (delegate as! MovieCollectionViewController).updateMovieList(indexSelected: segment.selectedSegmentIndex)
+        //}
     }
     
 }

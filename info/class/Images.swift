@@ -15,7 +15,7 @@ class Images: NSObject {
     var posterSizes:    [String]
     
     init(json: JSON) {
-        baseUrl = Util.jsonStringValue(json, attribute: "base_url")
+        baseUrl = Util.jsonStringValue(json: json, attribute: "base_url")
         
         posterSizes = []
         
@@ -25,9 +25,9 @@ class Images: NSObject {
             posterSizes.append(item.string!)
         }
         
-        Util.saveAttribute(baseUrl, key: "base_url")
+        Util.saveAttribute(value: baseUrl, key: "base_url")
         if posterSizes.count > 0 {
-            Util.saveAttribute(posterSizes[posterSizes.count/2], key: "base_size")
+            Util.saveAttribute(value: posterSizes[posterSizes.count/2], key: "base_size")
         }
     }
 }

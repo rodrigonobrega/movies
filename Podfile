@@ -8,7 +8,7 @@ target 'info' do
   # Pods for info
   
   pod 'SwiftyJSON'
-  pod 'Alamofire', '~> 3.4'
-  pod 'AlamofireImage', '~> 2.0'
+  pod 'Alamofire'
+  pod 'AlamofireImage'
 
 end

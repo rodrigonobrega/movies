@@ -25,28 +25,28 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     
     private var lastContentOffset: CGFloat = 0
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
-    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         collectionView?.reloadData()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         collectionView?.reloadData()
-        self.clearsSelectionOnViewWillAppear = self.splitViewController!.collapsed
+        self.clearsSelectionOnViewWillAppear = self.splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let singleTap = UITapGestureRecognizer(target: self, action: #selector(MovieCollectionViewController.handleTap(_:)))
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(MovieCollectionViewController.handleTap(sender:)))
 
         singleTap.cancelsTouchesInView = false
         singleTap.numberOfTapsRequired = 1
-        singleTap.enabled = true
+        singleTap.isEnabled = true
         singleTap.delegate = self
         self.view.addGestureRecognizer(singleTap)
         
@@ -66,7 +66,7 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     }
     
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     func handleTap(sender:AnyObject?) {
@@ -74,10 +74,10 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     }
     func loadBegin() {
         
-        Connection.configApplication( {(message) -> Void in
+        Connection.configApplication( onSuccess: {(message) -> Void in
             
             if let msg = message {
-                Util.showMessage(msg)
+                Util.showMessage(msg: msg)
             } else { self.loadMovies() }
             
             }, onError: {
@@ -94,12 +94,12 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
             return;
         }
         
-        Connection.loadMovies(page, sort_by: sortBy, onSuccess: { (retorno) -> Void in
+        Connection.loadMovies(page: page, sort_by: sortBy, onSuccess: { (retorno) -> Void in
             self.finishedLoadMovies = true
             if retorno.listMovie.count > 0 {
                 
                 self.finishedLoadMovies = false
-                self.listMovie.appendContentsOf(retorno.listMovie)
+                self.listMovie.append(contentsOf: retorno.listMovie)
                 
                 
                 var shotPercentageFloat: Float
@@ -121,33 +121,37 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     }
 
     // MARK: UICollectionViewDataSource
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listMovie.count
     }
 
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+//    }
+//
+//    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+//
         if indexPath.row + 1 == listMovie.count && !finishedLoadMovies { // if last element and can load more items
-            let cellLoading = collectionView.dequeueReusableCellWithReuseIdentifier("CellLoading", forIndexPath: indexPath)
+            let cellLoading = collectionView.dequeueReusableCell(withReuseIdentifier: "CellLoading", for: indexPath as IndexPath)
             page = page + 1
             listMovie.removeLast() //remove last element
             loadMovies()
             return cellLoading
         }
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MovieCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath as IndexPath) as! MovieCollectionViewCell
         let movie = listMovie[indexPath.row]
         cell.movie = movie
         return cell
     }
     
-    override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+    func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
         
-        let cellH = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: "CellHeader", forIndexPath: indexPath) as! FilterCollectionReusableView
+        let cellH = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "CellHeader", for: indexPath as IndexPath) as! FilterCollectionReusableView
 
-        let font = UIFont.systemFontOfSize(20)
+        let font = UIFont.systemFont(ofSize: 20)
         cellH.segmentedControl.setTitleTextAttributes([NSFontAttributeName: font],
-                                                forState: UIControlState.Normal)
+                                                      for: .normal)
         cellH.segmentedControl.removeBorders()
         cellH.delegate = self
         cellH.segmentedControl.selectedSegmentIndex = sortBy
@@ -155,12 +159,12 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
         let sizeTotal = collectionView.frame.size
         let newWidth = sizeTotal.width/2
         let newHeight = (Util.standarCellSize.height * newWidth)/Util.standarCellSize.width
-        let newSize = CGSizeMake(newWidth, newHeight)
+        let newSize = CGSize(width: newWidth, height: newHeight)
 
         return newSize
     }
@@ -173,18 +177,21 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
         loadMovies()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+//    }
+//    func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             
             let cellSelected = sender as! MovieCollectionViewCell
             
-            if let indexPath = self.collectionView?.indexPathForCell(cellSelected) {
+            if let indexPath = self.collectionView?.indexPath(for: cellSelected) {
                 
                 let movie = listMovie[indexPath.row]
-                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.movie = movie
                 controller.imagePoster = cellSelected.imagePoster.image
-                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
             }
         }
@@ -195,21 +202,21 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
 
     }
     
-    override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
         if tapWhenScrolling {
             navigationController?.setNavigationBarHidden(false, animated: true)
             tapWhenScrolling = false
-        } else if navigationController?.navigationBarHidden == true {
-            Util.playSound("slide")
+        } else if navigationController?.isNavigationBarHidden == true {
+            Util.playSound(soundName: "slide")
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
         self.startAlphaToNavigation()
     }
     
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
-        self.navigationController!.navigationBar.setBackgroundImage(UIImage.fromColor(Util.darkColor.colorWithAlphaComponent(0.4)), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController!.navigationBar.setBackgroundImage(UIImage.fromColor(color: Util.darkColor.withAlphaComponent(0.4)), for: UIBarMetrics.default)
         navigationController?.setNavigationBarHidden(true, animated: true)
 
     }
@@ -218,7 +225,7 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
         var alpha = 0.5
         var tempo = 0.1
         for _ in 0...24 {
-            performSelector(#selector(incrementAlphaToNavigation), withObject: NSNumber(double: alpha), afterDelay: tempo )
+            perform(#selector(incrementAlphaToNavigation), with: NSNumber(value: alpha), afterDelay: tempo )
             alpha = alpha + 0.01
             tempo = tempo + 0.02
         }
@@ -227,11 +234,11 @@ class MovieCollectionViewController: UICollectionViewController, UICollectionVie
     
     func incrementAlphaToNavigation(alpha:NSNumber) {
         let cg = Float(alpha)
-        self.navigationController!.navigationBar.setBackgroundImage(UIImage.fromColor(Util.darkColor.colorWithAlphaComponent(CGFloat(cg))), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController!.navigationBar.setBackgroundImage(UIImage.fromColor(color: Util.darkColor.withAlphaComponent(CGFloat(cg))), for: UIBarMetrics.default)
     }
     
     
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (self.lastContentOffset > scrollView.contentOffset.y) {
             navigationController?.setNavigationBarHidden(false, animated: true)
         }

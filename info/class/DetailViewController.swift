@@ -20,10 +20,10 @@ class DetailViewController: UITableViewController {
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            self.tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
@@ -38,7 +38,7 @@ class DetailViewController: UITableViewController {
         if let detail = self.movie {
             if !loadingTrailers {
                 loadingTrailers = true
-                Connection.loadTrailers(detail.id, onSuccess: { (retorno) -> Void in
+                Connection.loadTrailers(idMovie: detail.id, onSuccess: { (retorno) -> Void in
 
                     self.listTrailer = retorno.listTrailer
                     self.loadingTrailers = false
@@ -54,20 +54,27 @@ class DetailViewController: UITableViewController {
     }
     
     // MARK: - UITableViewDataSource
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2 + self.listTrailer.count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.listTrailer.count > 0 {
+            
+            return 2 + self.listTrailer.count
+        }
+        return 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+//    }
+//    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//        
         if indexPath.row == 0 && indexPath.section == 0{
-            let cell = tableView.dequeueReusableCellWithIdentifier("CellTitle", forIndexPath: indexPath) as! TitleTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CellTitle", for: indexPath as IndexPath) as! TitleTableViewCell
             
             cell.movie = movie
             
             return cell
         } else if indexPath.row == 1 && indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("CellDetail", forIndexPath: indexPath) as! DetailTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CellDetail", for: indexPath as IndexPath) as! DetailTableViewCell
             if !loadingTrailers {
             cell.imgPoster = imagePoster
                 cell.movie = movie
@@ -76,40 +83,40 @@ class DetailViewController: UITableViewController {
 
         }
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("CellVideo", forIndexPath: indexPath) as! VideoTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CellVideo", for: indexPath as IndexPath) as! VideoTableViewCell
         let trailer = listTrailer[indexPath.row - 2]
         
         cell.lblName.text = trailer.name
-        cell.selectionStyle = .Default
-        cell.userInteractionEnabled = true
+        cell.selectionStyle = .default
+        cell.isUserInteractionEnabled = true
         return cell
     }
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         if indexPath.row == 1 && indexPath.section == 0 {
-            let cell = tableView.cellForRowAtIndexPath(indexPath) as! DetailTableViewCell
+            let cell = tableView.cellForRow(at: indexPath as IndexPath) as! DetailTableViewCell
             cell.updateVote()
             return;
         }
         let trailer = listTrailer[indexPath.row - 2]
-        if(trailer.site!.caseInsensitiveCompare("youtube") == NSComparisonResult.OrderedSame){
+        if(trailer.site!.caseInsensitiveCompare("youtube") == ComparisonResult.orderedSame){
             let youtubeId = trailer.key!
             var url = NSURL(string:"youtube://\(youtubeId)")!
-            if UIApplication.sharedApplication().canOpenURL(url)  {
-                UIApplication.sharedApplication().openURL(url)
+            if UIApplication.shared.canOpenURL(url as URL)  {
+                UIApplication.shared.openURL(url as URL)
             } else {
                 url = NSURL(string:"http://www.youtube.com/watch?v=\(youtubeId)")!
-                UIApplication.sharedApplication().openURL(url)
+                UIApplication.shared.openURL(url as URL)
             }
         } else {
-            Util.showMessage("Content not available on Youtube")
+            Util.showMessage(msg: "Content not available on Youtube")
         }
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.row == 0 && indexPath.section == 0 {
             return 144
         } else if indexPath.row == 1 && indexPath.section == 0 {

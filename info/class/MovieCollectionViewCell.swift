@@ -23,10 +23,10 @@ class MovieCollectionViewCell: UICollectionViewCell {
         self.imagePoster.image = UIImage(named: "loading")
         
         if let imgURL = createUrlImage() {
-            if let img = Util.cachedImage(imgURL){
+            if let img = Util.cachedImage(urlString: imgURL){
                 self.imagePoster.image = img
             } else {
-                self.imagePoster.imageFromUrl(imgURL)
+                self.imagePoster.imageFromUrl(urlString: imgURL)
             }
         }     }
     

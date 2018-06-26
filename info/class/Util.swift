@@ -11,7 +11,7 @@ import AudioToolbox
 
 class Util: NSObject {
     
-    static let standarCellSize = CGSizeMake(160, 240)// use for set default size in movie controller
+    static let standarCellSize = CGSize(width: 160, height: 240)// CGSizeMake(160, 240)// use for set default size in movie controller
     static let darkColor       = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
     
     // verify internet access
@@ -20,13 +20,17 @@ class Util: NSObject {
     }
     
     class func playSound(soundName:String) {
-                
-        dispatch_async(dispatch_get_main_queue(), {
+        
+        DispatchQueue.main.async {
+            
+        
+        
+        //dispatch_async(dispatch_get_main_queue(), {
             var mySound: SystemSoundID = 0
-            let sound0 = NSBundle.mainBundle().URLForResource(soundName, withExtension: "wav")
-            AudioServicesCreateSystemSoundID(sound0!, &mySound)
+            let sound0 = Bundle.main.url(forResource: soundName, withExtension: "wav")
+            AudioServicesCreateSystemSoundID(sound0! as CFURL, &mySound)
             AudioServicesPlaySystemSound(mySound);
-        })
+        }//)
 
     }
     
@@ -51,11 +55,11 @@ class Util: NSObject {
     )
     
     class func cacheImage(image: Image, urlString: String) {
-        imageCache.addImage(image, withIdentifier: urlString)
+        imageCache.add(image, withIdentifier: urlString)
     }
     
     class func cachedImage(urlString: String) -> Image? {
-        return imageCache.imageWithIdentifier(urlString)
+        return imageCache.image(withIdentifier: urlString)
     }
     
     //MARK: = JSON string and int access
@@ -69,16 +73,16 @@ class Util: NSObject {
     
     //MARK: = Save attibute in NSUserDefaults
     class func saveAttribute(value:String, key:String) {
-        NSUserDefaults.standardUserDefaults().setValue(value, forKey: key)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.setValue(value, forKey: key)
+        UserDefaults.standard.synchronize()
     }
     
     //MARK: = get base url and base image size from NSUserDefaults
     class func getBaseUrl() -> String {
-        return NSUserDefaults.standardUserDefaults().stringForKey("base_url")!
+        return UserDefaults.standard.string(forKey: "base_url")!
     }
     
     class func getBaseSize() -> String {
-        return NSUserDefaults.standardUserDefaults().stringForKey("base_size")!
+        return UserDefaults.standard.string(forKey: "base_size")!
     }
 }

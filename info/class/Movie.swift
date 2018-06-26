@@ -23,12 +23,12 @@ class Movie: NSObject {
     var genres:[String]
     
     init(json: JSON) {
-        posterImg   = Util.jsonStringValue(json, attribute: "poster_path")
-        overview    = Util.jsonStringValue(json, attribute: "overview")
-        releaseDate = Util.jsonStringValue(json, attribute: "release_date")
-        title       = Util.jsonStringValue(json, attribute: "title")
-        id          = Util.jsonIntValue(json, attribute: "id")
-        runtime     = Util.jsonIntValue(json, attribute: "runtime")
+        posterImg   = Util.jsonStringValue(json: json, attribute: "poster_path")
+        overview    = Util.jsonStringValue(json: json, attribute: "overview")
+        releaseDate = Util.jsonStringValue(json: json, attribute: "release_date")
+        title       = Util.jsonStringValue(json: json, attribute: "title")
+        id          = Util.jsonIntValue(json: json, attribute: "id")
+        runtime     = Util.jsonIntValue(json: json, attribute: "runtime")
         voteAverage = json["vote_average"].double
         
         genres = []

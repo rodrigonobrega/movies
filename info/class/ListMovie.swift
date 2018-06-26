@@ -17,9 +17,9 @@ class ListMovie: NSObject {
     var total_results:  Int?
     
     init(json: JSON) {
-        page            = Util.jsonIntValue(json, attribute: "page")
-        totalPages      = Util.jsonIntValue(json, attribute: "total_pages")
-        total_results  = Util.jsonIntValue(json, attribute: "total_results")
+        page            = Util.jsonIntValue(json: json, attribute: "page")
+        totalPages      = Util.jsonIntValue(json: json, attribute: "total_pages")
+        total_results  = Util.jsonIntValue(json: json, attribute: "total_results")
         
         listMovie = []
         

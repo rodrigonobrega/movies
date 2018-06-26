@@ -29,18 +29,18 @@ class TitleTableViewCell: UITableViewCell {
     
     func configureCell() {
         
-        self.selectionStyle = .None
-        self.userInteractionEnabled = false
+        self.selectionStyle = .none
+        self.isUserInteractionEnabled = false
         self.contentView.backgroundColor = Util.darkColor
         self.lblTitle.textColor = originalColor
         
         if self.lblTitle.text == movie?.title {
             
-            UIView.animateWithDuration(0.2, animations: {
+            UIView.animate(withDuration: 0.2, animations: {
                 self.contentView.backgroundColor = self.originalColor
                 }, completion: { Void in
-                    UIView.transitionWithView(self.lblTitle, duration: 0.2, options: .TransitionFlipFromTop, animations: {
-                        self.lblTitle.textColor = UIColor.whiteColor()
+                    UIView.transition(with: self.lblTitle, duration: 0.2, options: .transitionFlipFromTop, animations: {
+                        self.lblTitle.textColor = UIColor.white
                         }, completion: nil)
             })
         }
@@ -49,7 +49,7 @@ class TitleTableViewCell: UITableViewCell {
     
     
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
 

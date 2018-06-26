@@ -18,12 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         // Override point for customization after application launch.
         let splitViewController = self.window!.rootViewController as! UISplitViewController
         let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
-        navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         splitViewController.delegate = self
         if Connection.api_key == "xxx" {
             print("please configure your API key in >>>>>> Connection.swift <<<<<< file")
         }
-        NSThread.sleepForTimeInterval(0.4)
+        Thread.sleep(forTimeInterval: 0.4)
         
         return true
     }

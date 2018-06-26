@@ -47,11 +47,11 @@ class DetailTableViewCell: UITableViewCell, VoteControl {
         newFrame.size.width = newFrame.size.width * 2
         self.imagePoster.frame = newFrame
         
-        UIView.animateWithDuration(0.4, animations: {
+        UIView.animate(withDuration: 0.4, animations: {
             self.imagePoster.frame = frame
             }) { (Bool) in
-                Util.playSound("drop")
-                self.performSelector(#selector(self.averageVoteStart), withObject: nil, afterDelay: 0.2)
+                Util.playSound(soundName: "drop")
+                self.perform(#selector(self.averageVoteStart), with: nil, afterDelay: 0.2)
         }
     }
     
@@ -77,7 +77,7 @@ class DetailTableViewCell: UITableViewCell, VoteControl {
     func configureCell() {
         
         
-        Connection.loadMovieExtraData(movie.id, onSuccess: { (retorno) -> Void in
+        Connection.loadMovieExtraData(idMovie: movie.id, onSuccess: { (retorno) -> Void in
             
             self.movie!.runtime = retorno.runtime
             self.movie?.genres = retorno.genres
@@ -114,7 +114,7 @@ class DetailTableViewCell: UITableViewCell, VoteControl {
         
         self.lblOverview.text = movie?.overview
         if let date = movie?.releaseDate {
-            self.lblYear.text = date.componentsSeparatedByString("-")[0]
+            self.lblYear.text = date.components(separatedBy: "-")[0]
         }
     }
     
@@ -123,14 +123,14 @@ class DetailTableViewCell: UITableViewCell, VoteControl {
         
         self.labelVote.text = "\(self.labelVote.text!)⭐️";
         let charsCount = self.labelVote.text?.characters.count
-        if charsCount >= 6 {
+        if charsCount! >= 6 {
             self.labelVote.text = "⭐️";
-            Util.playSound("vote0")
+            Util.playSound(soundName: "vote0")
         } else {
             if charsCount == 5 {
                 Util.vibrate()
             }
-            Util.playSound("vote1")
+            Util.playSound(soundName: "vote1")
         }
 
     }
@@ -142,13 +142,13 @@ class DetailTableViewCell: UITableViewCell, VoteControl {
         
         for index in 0...averageStars {
             let delay = 0.2 * Double(index)
-            self.performSelector(#selector(update), withObject: nil, afterDelay: NSTimeInterval(delay))
+            self.perform(#selector(update), with: nil, afterDelay: TimeInterval(delay))
         }
     }
     
     func update() {
         self.labelVote.text = "\(self.labelVote.text!)⭐️";
-        Util.playSound("tick")
+        Util.playSound(soundName: "tick")
         self.labelVote.setNeedsLayout()
     }
 }

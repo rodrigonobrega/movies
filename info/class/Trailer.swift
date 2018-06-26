@@ -18,11 +18,11 @@ class Trailer: NSObject {
     var key:    String?
     
     init(json: JSON) {
-        id   = Util.jsonIntValue(json, attribute: "id")
-        site = Util.jsonStringValue(json, attribute: "site")
-        name = Util.jsonStringValue(json, attribute: "name")
-        type = Util.jsonStringValue(json, attribute: "type")
-        key  = Util.jsonStringValue(json, attribute: "key")
+        id   = Util.jsonIntValue(json: json, attribute: "id")
+        site = Util.jsonStringValue(json: json, attribute: "site")
+        name = Util.jsonStringValue(json: json, attribute: "name")
+        type = Util.jsonStringValue(json: json, attribute: "type")
+        key  = Util.jsonStringValue(json: json, attribute: "key")
     }
 
 }
